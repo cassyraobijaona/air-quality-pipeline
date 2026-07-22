@@ -1,10 +1,15 @@
 """
 scripts/config.py
 ====================
-Configuration centrale du projet : villes suivies, chemins de stockage.
+Configuration centrale du projet : villes suivies, chemins de stockage, clé API.
 """
 
 import os
+from dotenv import load_dotenv
+
+load_dotenv()  # charge les variables du fichier .env
+
+API_KEY = os.environ.get("OPENWEATHER_API_KEY")
 
 VILLES = [
     {"nom": "Antananarivo", "pays": "MG", "lat": -18.8792, "lon": 47.5079},
@@ -13,7 +18,6 @@ VILLES = [
     {"nom": "Los Angeles",  "pays": "US", "lat": 34.0522,  "lon": -118.2437},
     {"nom": "Beijing",      "pays": "CN", "lat": 39.9042,  "lon": 116.4074},
 ]
-
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW_DIR = os.path.join(BASE_DIR, "data", "raw")
