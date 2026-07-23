@@ -1,0 +1,39 @@
+name: Pipeline qualite air (horaire)
+
+on:
+  schedule:
+    - cron: "0 * * * *"   # toutes les heures, a la minute 0
+  workflow_dispatch:        # bouton "Run workflow" manuel sur GitHub
+
+permissions:
+  contents: write
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du repo
+        uses: actions/checkout@v4
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Installer les dependances
+        run: pip install -r requirements.txt
+
+      - name: Lancer le pipeline horaire
+        env:
+          OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python scripts/run_hourly.py
+
+      - name: Commiter les nouvelles donnees (raw/ + clean/)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git diff --staged --quiet || git commit -m "Donnees horaires automatiques - $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git push

@@ -219,8 +219,6 @@ __marimo__/
 
 # Spécifique au projet
 .env
-data/*.csv
-data/*/
 airflow.cfg
 airflow.db
 logs/
